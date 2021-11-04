@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPixmap>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,7 +16,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_addButton_clicked();
+    void updateBuffer(QPixmap);
+signals:
+    void updateSize(QSize);
+    void start();
 private:
     Ui::MainWindow *ui;
+    void showEvent(QShowEvent*);
+    void resizeEvent(QResizeEvent*);
 };
 #endif // MAINWINDOW_H

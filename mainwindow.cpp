@@ -5,8 +5,9 @@
 #include <QCloseEvent>
 
 QStringList formulas;
-qreal scale;
-QPoint offset;
+qreal scale = 0.05;
+bool drag = false;
+QPoint dragStart, offset(0, 0);
 QThread* drawerThread;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -15,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
+    connect(ui->addButton, SIGNAL(clicked()), this, SLOT(onAddButtonClicked()));
+    ui->canvas->installEventFilter(this);
 
     drawerThread = new QThread;
     Drawer* drawer = new Drawer();
@@ -23,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(start()), drawer, SLOT(draw()));
     connect(this, SIGNAL(updateSize(QSize)), drawer, SLOT(updateSize(QSize)), Qt::DirectConnection);
     connect(this, SIGNAL(updateFormulas(QStringList)), drawer, SLOT(updateFormulas(QStringList)), Qt::DirectConnection);
-    //connect(this, SIGNAL(updatePosition(QPoint, qreal)), drawer, SLOT(updatePosition(QPoint, qreal)), Qt::DirectConnection);
+    connect(this, SIGNAL(updatePosition(QPoint, qreal)), drawer, SLOT(updatePosition(QPoint, qreal)), Qt::DirectConnection);
     drawerThread->start();
     QTimer::singleShot(0, this, SLOT(start()));
 }
@@ -44,7 +47,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     emit updateSize(ui->canvas->size());
 }
 
-void MainWindow::on_addButton_clicked()
+void MainWindow::onAddButtonClicked()
 {
     auto formula = ui->formulaEdit->text();
     ui->formulasListWidget->addItem(formula);
@@ -58,6 +61,49 @@ void MainWindow::updateBuffer(QPixmap pixmap) {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-    drawerThread->terminate();
+    drawerThread->exit();
     event->accept();
+}
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
+    if (obj != ui->canvas) {
+        return false;
+    }
+
+    auto type = event->type();
+
+    if (type == QEvent::Wheel) {
+        auto ev = static_cast<QWheelEvent*>(event);
+        qDebug() << ev->pixelDelta();
+        return true;
+    }
+
+    if (type == QEvent::MouseButtonPress) {
+        auto ev = static_cast<QMouseEvent*>(event);
+        if (!drag) {
+            drag = true;
+            dragStart = ev->pos();
+        }
+        return true;
+    }
+
+    if (type == QEvent::MouseMove) {
+        auto ev = static_cast<QMouseEvent*>(event);
+        if (drag) {
+            auto dragDiff = ev->pos() - dragStart;
+            emit updatePosition(offset + dragDiff, scale);
+        }
+        return true;
+    }
+
+    if (type == QEvent::MouseButtonRelease) {
+        auto ev = static_cast<QMouseEvent*>(event);
+        if (drag) {
+            drag = false;
+            offset += ev->pos() - dragStart;
+        }
+        return true;
+    }
+
+    return false;
 }

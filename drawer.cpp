@@ -28,7 +28,7 @@ void Drawer::draw(){
         int width = storedSize.width(), height = storedSize.height();
         int halfWidth = width / 2;
         qreal scale = storedScale;
-        qreal startPosX = (storedOffset.x() - halfWidth) * scale, posX;
+        qreal startPosX = (-storedOffset.x() - halfWidth) * scale, posX;
         int normalizedOffsetY = height / 2 + storedOffset.y();
         QPixmap buffer(storedSize);
         QPainter painter(&buffer);

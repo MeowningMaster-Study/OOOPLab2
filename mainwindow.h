@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_addButton_clicked();
+    void onAddButtonClicked();
     void updateBuffer(QPixmap);
 signals:
     void updateSize(QSize);
@@ -29,5 +29,7 @@ private:
     void showEvent(QShowEvent*);
     void resizeEvent(QResizeEvent*);
     void closeEvent(QCloseEvent*);
+protected:
+    bool eventFilter(QObject*, QEvent*);
 };
 #endif // MAINWINDOW_H

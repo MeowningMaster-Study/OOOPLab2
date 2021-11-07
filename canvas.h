@@ -14,8 +14,6 @@ public:
     explicit Canvas(QWidget* parent = nullptr);
     void updateBuffer(QPixmap* buffer);
 
-// public slots:
-
 protected:
     void paintEvent(QPaintEvent* event) override;
 

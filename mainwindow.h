@@ -21,10 +21,13 @@ private slots:
     void updateBuffer(QPixmap);
 signals:
     void updateSize(QSize);
+    void updateFormulas(QStringList);
+    void updatePosition(QPoint offset, qreal scale);
     void start();
 private:
     Ui::MainWindow *ui;
     void showEvent(QShowEvent*);
     void resizeEvent(QResizeEvent*);
+    void closeEvent(QCloseEvent*);
 };
 #endif // MAINWINDOW_H

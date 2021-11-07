@@ -9,6 +9,7 @@ Canvas::Canvas(QWidget *parent)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
+    setMouseTracking(true);
 }
 
 void Canvas::updateBuffer(QPixmap* buffer)

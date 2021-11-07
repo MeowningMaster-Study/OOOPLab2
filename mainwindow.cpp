@@ -74,7 +74,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
 
     if (type == QEvent::Wheel) {
         auto ev = static_cast<QWheelEvent*>(event);
-        scale = scale * (1. + ev->angleDelta().y()/120 * 0.05);
+        scale = scale * (1. - ev->angleDelta().y()/120 * 0.05);
         emit updatePosition(offset, scale);
         return true;
     }

@@ -46,17 +46,21 @@ void Drawer::draw(){
             parser.compile(formula.toStdString(), expression);
             posX = startPosX;
             QPainterPath path;
+            qreal prevY = Q_QNAN;
             for (auto x = 0; x <= width; x++) {
                 qreal posY = expression.value();
-                int y = normalizedOffsetY - qFloor(posY / scale);
-                QPoint p(x, y);
+                if (!qIsNaN(posY)) {
+                    int y = normalizedOffsetY - qFloor(posY / scale);
+                    QPoint p(x, y);
 
-                if (x == 0) {
-                    path.moveTo(p);
-                } else {
-                    path.lineTo(p);
+                    if (qIsNaN(prevY)) {
+                        path.moveTo(p);
+                    } else {
+                        path.lineTo(p);
+                    }
                 }
                 posX += scale;
+                prevY = posY;
             }
             painter.drawPath(path);
         }

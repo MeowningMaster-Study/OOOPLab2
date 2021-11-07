@@ -7,7 +7,7 @@
 QStringList formulas;
 qreal scale = 0.05;
 bool drag = false;
-QPoint dragStart, offset(0, 0);
+QPoint dragStart, dragOffset, offset(0, 0);
 QThread* drawerThread;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -74,7 +74,8 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
 
     if (type == QEvent::Wheel) {
         auto ev = static_cast<QWheelEvent*>(event);
-        qDebug() << ev->pixelDelta();
+        scale = scale * (1. + ev->angleDelta().y()/120 * 0.05);
+        emit updatePosition(offset, scale);
         return true;
     }
 
@@ -83,6 +84,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
         if (!drag) {
             drag = true;
             dragStart = ev->pos();
+            dragOffset = {0, 0};
         }
         return true;
     }
@@ -91,16 +93,16 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
         auto ev = static_cast<QMouseEvent*>(event);
         if (drag) {
             auto dragDiff = ev->pos() - dragStart;
-            emit updatePosition(offset + dragDiff, scale);
+            offset += dragDiff - dragOffset;
+            dragOffset = dragDiff;
+            emit updatePosition(offset, scale);
         }
         return true;
     }
 
     if (type == QEvent::MouseButtonRelease) {
-        auto ev = static_cast<QMouseEvent*>(event);
         if (drag) {
             drag = false;
-            offset += ev->pos() - dragStart;
         }
         return true;
     }

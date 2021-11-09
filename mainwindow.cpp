@@ -3,6 +3,7 @@
 #include "drawer.h"
 #include <QTimer>
 #include <QCloseEvent>
+#include <QFile>
 
 QStringList formulas;
 qreal scale = 0.05;
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     // setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(onAddButtonClicked()));
+    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(onSaveButtonClicked()));
     ui->canvas->installEventFilter(this);
 
     drawerThread = new QThread;
@@ -108,4 +110,11 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
     }
 
     return false;
+}
+
+void MainWindow::onSaveButtonClicked()
+{
+    QFile file("save.png");
+    file.open(QIODevice::WriteOnly);
+    ui->canvas->obtainBuffer().save(&file, "PNG");
 }

@@ -2,8 +2,6 @@
 
 #include <QPainter>
 
-QPixmap* storedBuffer;
-
 Canvas::Canvas(QWidget *parent)
     : QWidget(parent), storedBuffer(new QPixmap(0, 0))
 {
@@ -17,6 +15,10 @@ void Canvas::updateBuffer(QPixmap* buffer)
     delete storedBuffer;
     storedBuffer = buffer;
     update();
+}
+
+QPixmap Canvas::obtainBuffer() {
+    return QPixmap(*storedBuffer);
 }
 
 void Canvas::paintEvent(QPaintEvent* /*event*/)

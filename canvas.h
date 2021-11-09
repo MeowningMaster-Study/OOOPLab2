@@ -13,6 +13,7 @@ class Canvas : public QWidget
 public:
     explicit Canvas(QWidget* parent = nullptr);
     void updateBuffer(QPixmap* buffer);
+    QPixmap obtainBuffer();
 
 protected:
     void paintEvent(QPaintEvent* event) override;

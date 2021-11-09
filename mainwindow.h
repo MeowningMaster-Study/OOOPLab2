@@ -18,6 +18,7 @@ public:
 
 private slots:
     void onAddButtonClicked();
+    void onSaveButtonClicked();
     void updateBuffer(QPixmap);
 signals:
     void updateSize(QSize);

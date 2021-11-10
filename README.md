@@ -5,5 +5,4 @@
 - переміщення/зум області графіків
 - збереження зображення до файлу
 
-
-![image](https://user-images.githubusercontent.com/46621668/140658668-52ca9282-a855-46d8-912f-d5fb972bee62.png)
+![image](https://user-images.githubusercontent.com/46621668/141106628-1632a5ce-a86b-452a-83ae-2e5254b904be.png)
